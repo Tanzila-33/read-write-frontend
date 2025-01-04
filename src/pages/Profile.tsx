@@ -1,18 +1,19 @@
+import { useEffect, useState } from "react";
 import { Sidebar } from "../components/dashboard/Sidebar";
+import { getFromLocalStorage } from "../utils/localStorage";
 
 interface ProfileInfo {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
 }
 
-const profileInfo: ProfileInfo = {
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@example.com",
-};
 
 export default function ProfilePage() {
+  const [user,setUser]=useState<ProfileInfo>()
+useEffect(()=>{
+  fetch("https://read-write-backend.vercel.app/api/v1/auth/my-profile",{method: "GET", headers:{"Content-Type":"application/json",Authorization: getFromLocalStorage("accessToken")||""}}).then(res=>res.json()).then(data=>setUser(data.data))
+},[])
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +37,7 @@ export default function ProfilePage() {
                       First Name
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {profileInfo.firstName}
+                      {user?.first_name}
                     </dd>
                   </div>
                   <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -44,13 +45,13 @@ export default function ProfilePage() {
                       Last Name
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {profileInfo.lastName}
+                      {user?.last_name}
                     </dd>
                   </div>
                   <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">Email</dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {profileInfo.email}
+                      {user?.email}
                     </dd>
                   </div>
                 </dl>
